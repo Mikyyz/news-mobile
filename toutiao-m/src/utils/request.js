@@ -7,7 +7,8 @@ import store from '@/store';
 const BASE_URL = ' http://ttapi.research.itcast.cn/';
 
 const request = axios.create({
-    baseURL: BASE_URL
+    baseURL: BASE_URL,
+    method: 'GET'
 });
 
 // 添加请求拦截器

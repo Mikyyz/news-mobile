@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import 'amfe-flexible'
 import './styles/index.less'
+import './permission' // 权限
 import {
   Button,
   Cell,
@@ -24,7 +25,15 @@ import {
   Image as VanImage,
   Grid,
   GridItem,
-  Dialog
+  Dialog,
+  Tab,
+  Tabs,
+  List,
+  Skeleton,
+  PullRefresh,
+  Tag,
+  Popup,
+  Empty
   } from 'vant';
 import 'vant/lib/index.css';
 
@@ -49,6 +58,14 @@ Vue.use(VanImage);
 Vue.use(Grid);
 Vue.use(GridItem);
 Vue.use(Dialog);
+Vue.use(Tab);
+Vue.use(Tabs);
+Vue.use(List);
+Vue.use(Skeleton);
+Vue.use(PullRefresh);
+Vue.use(Tag);
+Vue.use(Popup);
+Vue.use(Empty);
 
 
 new Vue({
