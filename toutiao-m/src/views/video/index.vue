@@ -1,6 +1,6 @@
 <template>
     <div class="video">
-        视频
+        <van-empty description="开发中..." />
     </div>
 </template>
 
