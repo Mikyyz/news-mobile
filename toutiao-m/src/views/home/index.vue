@@ -11,7 +11,9 @@
                 class="searth-btn"
                 color="#5babfb"
                 type="info"
-                round size="small">
+                to="/search"
+                round 
+                size="small">
                 搜索
             </van-button>
         </van-nav-bar>
@@ -82,6 +84,7 @@ import  store  from 'store';
         },
         created () {
             this.loadChannels();
+            console.log(this);
         },
         methods: {
            async loadChannels() {
