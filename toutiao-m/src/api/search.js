@@ -29,3 +29,11 @@ export const getSearchHistories = () => {
         url: '/app/v1_0/search/histories'
     })
 }
+
+//删除用户全部搜索历史记录
+export const deleteAllHistories = () => {
+    return request({
+        method: 'DELETE',
+        url: '/app/v1_0/search/histories'
+    })
+}
