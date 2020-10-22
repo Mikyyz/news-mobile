@@ -18,7 +18,7 @@
         <!-- 搜索联想词 -->
         <lenovo-word v-else-if="searchText" :search-text="searchText" @search="onSearch" />
         <!-- 历史记录 -->
-        <search-history v-else :searchHistories="searchHistories" />
+        <search-history v-else :searchHistories="searchHistories" @search="onSearch" />
     </div>
 </template>
 
