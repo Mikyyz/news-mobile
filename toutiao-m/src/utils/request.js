@@ -3,12 +3,22 @@
 import axios from 'axios';
 
 import store from '@/store';
+import JSONbig from 'json-bigint';
 
 const BASE_URL = ' http://ttapi.research.itcast.cn/';
 
 const request = axios.create({
     baseURL: BASE_URL,
-    method: 'GET'
+    method: 'GET',
+    transformResponse: [function (data) {
+        try {
+            return JSONbig.parse(data);
+        } catch (err) {
+            console.log('转换失败', err);
+            
+            return data;
+        }
+    }]
 });
 
 // 添加请求拦截器
