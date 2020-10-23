@@ -7,7 +7,10 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/login')
+    component: () => import('@/views/login'),
+    meta: {
+      title: '登录'
+    }
   },
   {
     path: '/',
@@ -16,22 +19,34 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: () => import('@/views/home')
+        component: () => import('@/views/home'),
+        meta: {
+          title: '首页'
+        }
       },
       {
         path: '/qa',
         name: 'qa',
-        component: () => import('@/views/qa')
+        component: () => import('@/views/qa'),
+        meta: {
+          title: '问答'
+        }
       },
       {
         path: '/video',
         name: 'video',
-        component: () => import('@/views/video')
+        component: () => import('@/views/video'),
+        meta: {
+          title: '视频'
+        }
       },
       {
         path: '/my',
         name: 'my',
-        component: () => import('@/views/my')
+        component: () => import('@/views/my'),
+        meta: {
+          title: '我的'
+        }
       }
     ]
   },
@@ -54,6 +69,12 @@ const routes = [
     path: '/login-question',
     name: 'login-question',
     component: () => import('@/views/login/loginQuestion')
+  },
+  {
+    path: '/article/:articleId',
+    name: 'article',
+    component: () => import('@/views/article'),
+    props: true, //动态路由的参数映射到组件的props
   }
 ]
 
@@ -61,6 +82,13 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title;
+  }
+  next();
 })
 
 export default router
