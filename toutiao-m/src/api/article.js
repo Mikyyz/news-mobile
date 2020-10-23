@@ -10,3 +10,10 @@ export const getArticles = params => {
         params
     })
 }
+
+//获取文章详情
+export const getArticleDeatail = articleId => {
+    return request({
+        url: `/app/v1_0/articles/${articleId}`
+    })
+}
