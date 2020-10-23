@@ -35,9 +35,6 @@ export const getCurrentUser = () => {
     return request({
         method: 'GET',
         url: `/app/v1_0/user`
-        // headers: {
-        //     Authorization: `Bearer ${store.state.user.token}`
-        // }
     })
 }
 
