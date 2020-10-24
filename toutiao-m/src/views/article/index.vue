@@ -1,51 +1,94 @@
 <template>
-    <div class="article-container">
-        <van-nav-bar
-            left-arrow
-            fixed
-            title="文章详情"
-            @click-left="$router.back()"
-        />
-        <h1 class="article-title">{{article.title}}</h1>
-        <van-cell center class="user-info" :border="false">
-            <van-image 
-                slot="icon"
-                round
-                class="avatar"
-                :src="article.aut_photo" 
-            />
-            <span slot="title" class="user-name">{{article.aut_name}}</span>
-            <span slot="label" class="pubdate">
-                {{article.pubdate | relativeTime}}
-            </span>
-            <van-button v-if="article.is_followed" plain round size="small"  class="follow">已关注</van-button>
-            <van-button v-else type="info" round size="small" icon="plus" class="follow">关注</van-button>
-            
-        </van-cell>
-        <div class="markdown-body" ref="article-content" v-html="article.content"></div>
-    </div>
+    <div class="article-detail">
+        <div class="article-container" ref="article-container">
+            <van-nav-bar
+                left-arrow
+                fixed
+                @click-left="$router.back()"
+            >
+                <div slot="title" v-if="!isScrollTopgt120">文章详情</div>
+                <div slot="title" v-else-if="isScrollTopgt120" class="van-ellipsis">
+                   {{article.title}}
+                </div>
+            </van-nav-bar>
+            <h1 class="article-title">{{article.title}}</h1>
+            <van-cell center class="user-info" :border="false">
+                <van-image 
+                    slot="icon"
+                    round
+                    class="avatar"
+                    :src="article.aut_photo" 
+                />
+                <span slot="title" class="user-name">{{article.aut_name}}</span>
+                <span slot="label" class="pubdate">
+                    {{article.pubdate | relativeTime}}
+                </span>
+                <van-button 
+                    v-if="article.is_followed" 
+                    plain round size="small"  
+                    class="follow" 
+                    @click="toggleFollowUser"
+                    :loading="isFollowLoading"
+                >
+                    已关注
+                </van-button>
+                <van-button 
+                    v-else type="info" 
+                    round size="small" 
+                    icon="plus" class="follow" 
+                    @click="toggleFollowUser"
+                    :loading="isFollowLoading"
+                >
+                    关注
+                </van-button>
+                
+            </van-cell>
+            <div class="markdown-body" ref="article-content" v-html="article.content"></div>
+        </div>
+        <div class="article-bottom">
+                <van-button class="comment-btn" round icon="edit">
+                    <span class="text">写评论...</span>
+                </van-button>
+                <van-icon name="comment-o" class="comment-icon" info="9999" />
+                <van-icon 
+                    :color="article.is_collected ? '#FFB300' : ''"
+                    :name="article.is_collected ? 'star' : 'star-o'"
+                    @click="handleCollectArticle" 
+                />
+                <van-icon 
+                    name="good-job-o" 
+                />
+                <van-icon name="share-o" />
+        </div>
+    </div>    
 </template>
 
 <script>
 import { ImagePreview } from 'vant';
 import './markdown.css';
 import dayjs from '@/api/day';
-import { getArticleDeatail } from '@/api/article';
+import { getArticleDeatail, articleCollection, cancelArticleCollection } from '@/api/article';
+import { followUser, unfollowUser } from '@/api/user';
 
     export default {
         data() {
             return {
-                article: {}
+                article: {},
+                isFollowLoading: false, //关注用户时的加载状态是否显示
+                isScrollTopgt120: false, //监听scrollTop
             }
         },
         props: {
             articleId: {
-                type: Number,
+                type: [Number, String],
                 required: true
             },
         },
         created () {
             this.loadArticleDetail();
+        },
+        mounted () {
+            window.addEventListener('scroll', this.addScrollEvent)
         },
         methods: {
             async loadArticleDetail() {
@@ -71,6 +114,42 @@ import { getArticleDeatail } from '@/api/article';
                         })
                     }
                 })
+            },
+            async toggleFollowUser() { 
+                this.isFollowLoading = true;
+                if(this.article.is_followed) {
+                    //如果已经关注，则取消关注
+                    await unfollowUser(this.article.aut_id)
+                } else {
+                    //如果未关注，则关注
+                    await followUser(this.article.aut_id);
+                }
+                this.article.is_followed = !this.article.is_followed;
+                this.isFollowLoading = false;
+            },
+            async handleCollectArticle() {
+                if(this.article.is_collected) {
+                    //已收藏，就取消收藏
+                    await cancelArticleCollection(this.articleId);
+                } else {
+                    //没有收藏，就添加收藏
+                    await articleCollection(this.articleId);
+                }
+                this.article.is_collected = !this.article.is_collected;
+                this.$toast.success({
+                    message: `${this.article.is_collected ? '收藏成功' : '取消成功'}`,
+                    icon: 'passed'
+                })
+            },
+            addScrollEvent() {
+                const scrollTop = document.documentElement.scrollTop;
+                if(scrollTop > 110) {
+                    this.isScrollTopgt120 = true;
+                    return;
+                } else if(scrollTop < 110) {
+                    this.isScrollTopgt120 = false;
+                    return;
+                }
             }
         },
     }
@@ -84,28 +163,52 @@ import { getArticleDeatail } from '@/api/article';
         padding:14px;
         margin-top: 46px;
     }
-    .user-info {
-        .avatar {
-            width: 35px;
-            height: 35px;
-            margin-right: 8px;
-        }
-        .user-name {
-            font-size: 14px;
-            color: #333;
-        }
-        .van-cell__label {
-            font-size: 10px;
-            color: #b4b4b4;
-            margin-top: -1px;
-        }
-        .follow {
-            width: 85px;
-            height: 32px;
-        }
+    .avatar {
+        width: 35px;
+        height: 35px;
+        margin-right: 8px;
+    }
+    .user-name {
+        font-size: 14px;
+        color: #333;
+    }
+    .van-cell__label {
+        font-size: 10px;
+        color: #b4b4b4;
+        margin-top: -1px;
+    }
+    .follow {
+        width: 85px;
+        height: 32px;
     }
     .markdown-body {
         padding: 14px;
+    }
+}
+.article-bottom {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color:#FAFAFA;
+    position: fixed;
+    bottom: 0;
+    .comment-btn {
+        width: 40%;
+        height: 30px;
+        border: none;
+        background-color: #EEEEEE;
+        .text {
+            color: #212121;
+            font-size: 13px;
+        }
+    }
+    .van-icon-comment-o {
+        margin-top: 4px;
+    }
+    .van-ellipsis {
+        transition: .4s;
     }
 }
 </style>
