@@ -48,3 +48,27 @@ export const getUserChannerls = () => {
         url: `/app/v1_0/user/channels`
     })
 }
+
+/**
+ * 关注用户
+ */
+export const followUser = userId => {
+    return request({
+        url: '/app/v1_0/user/followings',
+        method: 'POST',
+        data: {
+            target: userId
+        }
+    })
+}
+
+/**
+ * 取消关注用户
+ */
+export const unfollowUser = userId => {
+    return request({
+        url: `/app/v1_0/user/followings/${userId}`,
+        method: 'DELETE'
+    })
+}
+
