@@ -55,8 +55,10 @@
                     :name="article.is_collected ? 'star' : 'star-o'"
                     @click="handleCollectArticle" 
                 />
-                <van-icon 
-                    name="good-job-o" 
+                <van-icon
+                    :color="article.attitude === 1 ? 'red' : ''" 
+                    :name="article.attitude === 1 ? 'good-job' : 'good-job-o'" 
+                    @click="handleLikeArticle"
                 />
                 <van-icon name="share-o" />
         </div>
@@ -67,7 +69,7 @@
 import { ImagePreview } from 'vant';
 import './markdown.css';
 import dayjs from '@/api/day';
-import { getArticleDeatail, articleCollection, cancelArticleCollection } from '@/api/article';
+import { getArticleDeatail, articleCollection, cancelArticleCollection, dislikeArticle, likeArticle } from '@/api/article';
 import { followUser, unfollowUser } from '@/api/user';
 
     export default {
@@ -140,6 +142,18 @@ import { followUser, unfollowUser } from '@/api/user';
                     message: `${this.article.is_collected ? '收藏成功' : '取消成功'}`,
                     icon: 'passed'
                 })
+            },
+            async handleLikeArticle() {
+                console.log('111')
+                if(this.article.attitude === 1) {
+                    //已经点赞文章，否则取消点赞
+                    await dislikeArticle(this.articleId);
+                    this.article.attitude = -1;
+                } else {
+                    //没有点赞，否则点赞文章
+                    await likeArticle(this.articleId)
+                    this.article.attitude = 1;
+                }
             },
             addScrollEvent() {
                 const scrollTop = document.documentElement.scrollTop;
