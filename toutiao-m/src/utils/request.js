@@ -13,9 +13,7 @@ const request = axios.create({
     transformResponse: [function (data) {
         try {
             return JSONbig.parse(data);
-        } catch (err) {
-            console.log('转换失败', err);
-            
+        } catch (err) {   
             return data;
         }
     }]
