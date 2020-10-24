@@ -40,3 +40,29 @@ export const cancelArticleCollection = articleId => {
         method: 'DELETE'
     })
 }
+
+/**
+ * 点赞文章
+ */
+
+export const likeArticle = articleId => {
+    return request({
+        url: '/app/v1_0/article/likings',
+        method: 'POST',
+        data: {
+            target: articleId
+        }
+    })
+}
+
+
+/**
+ * 取消点在文章
+ */
+
+export const dislikeArticle = articleId => {
+    return request({
+        url: `/app/v1_0/article/likings/${articleId}`,
+        method: 'DELETE'
+    })
+}
