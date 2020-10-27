@@ -67,9 +67,10 @@ Vue.use(Tag);
 Vue.use(Popup);
 Vue.use(Empty);
 
-
-new Vue({
+var vm = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
+
+
