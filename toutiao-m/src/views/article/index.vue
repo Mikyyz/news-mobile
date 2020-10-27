@@ -8,60 +8,78 @@
             >
                 <div slot="title" v-if="!isScrollTopgt120">文章详情</div>
                 <div slot="title" v-else-if="isScrollTopgt120" class="van-ellipsis">
-                   {{article.title}}
+                    {{article.title}}
                 </div>
             </van-nav-bar>
-            <h1 class="article-title">{{article.title}}</h1>
-            <van-cell center class="user-info" :border="false">
-                <van-image 
-                    slot="icon"
-                    round
-                    class="avatar"
-                    :src="article.aut_photo" 
-                />
-                <span slot="title" class="user-name">{{article.aut_name}}</span>
-                <span slot="label" class="pubdate">
-                    {{article.pubdate | relativeTime}}
-                </span>
-                <van-button 
-                    v-if="article.is_followed" 
-                    plain round size="small"  
-                    class="follow" 
-                    @click="toggleFollowUser"
-                    :loading="isFollowLoading"
-                >
-                    已关注
-                </van-button>
-                <van-button 
-                    v-else type="info" 
-                    round size="small" 
-                    icon="plus" class="follow" 
-                    @click="toggleFollowUser"
-                    :loading="isFollowLoading"
-                >
-                    关注
-                </van-button>
-                
-            </van-cell>
-            <div class="markdown-body" ref="article-content" v-html="article.content"></div>
+            <div class="article-wrap">
+                <h1 class="article-title">{{article.title}}</h1>
+                <van-cell center class="user-info" :border="false">
+                    <van-image 
+                        slot="icon"
+                        round
+                        class="avatar"
+                        :src="article.aut_photo" 
+                    />
+                    <span slot="title" class="user-name">{{article.aut_name}}</span>
+                    <span slot="label" class="pubdate">
+                        {{article.pubdate | relativeTime}}
+                    </span>
+                    <van-button 
+                        v-if="article.is_followed" 
+                        plain round size="small"  
+                        class="follow" 
+                        @click="toggleFollowUser"
+                        :loading="isFollowLoading"
+                    >
+                        已关注
+                    </van-button>
+                    <van-button 
+                        v-else type="info" 
+                        round size="small" 
+                        icon="plus" class="follow" 
+                        @click="toggleFollowUser"
+                        :loading="isFollowLoading"
+                    >
+                        关注
+                    </van-button>
+                    
+                </van-cell>
+                <div class="markdown-body" ref="article-content" v-html="article.content"></div>
+                <comment-list :source="articleId" :list="commentList" @on-reply="handleReply"/>
+            </div>
         </div>
         <div class="article-bottom">
-                <van-button class="comment-btn" round icon="edit">
+                <van-button class="comment-btn" round icon="edit" @click="isPostPopupShow = true">
                     <span class="text">写评论...</span>
                 </van-button>
-                <van-icon name="comment-o" class="comment-icon" info="9999" />
+                <van-icon name="comment-o" class="comment-icon icon" info="9999" />
                 <van-icon 
                     :color="article.is_collected ? '#FFB300' : ''"
                     :name="article.is_collected ? 'star' : 'star-o'"
                     @click="handleCollectArticle" 
+                    class="icon"
                 />
                 <van-icon
                     :color="article.attitude === 1 ? 'red' : ''" 
                     :name="article.attitude === 1 ? 'good-job' : 'good-job-o'" 
                     @click="handleLikeArticle"
+                    class="icon"
                 />
-                <van-icon name="share-o" />
+                <van-icon name="share-o" class="icon"/>
         </div>
+        <!-- 发布评论 -->
+        <van-popup v-model="isPostPopupShow" position="bottom">
+            <post-comment :target="articleId" @post-success="onPostSuccess" />
+        </van-popup>
+        <!-- 回复评论 -->
+        <van-popup v-model="isReplyPopupShow" position="bottom">
+            <comment-reply 
+                v-if="isReplyPopupShow" 
+                :comment="replyComment" 
+                :articleId="articleId" 
+                @close-popup="isReplyPopupShow = false" 
+            />
+        </van-popup>
     </div>    
 </template>
 
@@ -71,6 +89,9 @@ import './markdown.css';
 import dayjs from '@/api/day';
 import { getArticleDeatail, articleCollection, cancelArticleCollection, dislikeArticle, likeArticle } from '@/api/article';
 import { followUser, unfollowUser } from '@/api/user';
+import CommentList from './components/comment-list';
+import PostComment from './components/post-comment'
+import CommentReply from './components/comment-reply'
 
     export default {
         data() {
@@ -78,7 +99,16 @@ import { followUser, unfollowUser } from '@/api/user';
                 article: {},
                 isFollowLoading: false, //关注用户时的加载状态是否显示
                 isScrollTopgt120: false, //监听scrollTop
+                isPostPopupShow: false, //文章评论的popup
+                isReplyPopupShow: false, //回复评论的popup
+                replyComment: null,     //回复评论的数据
+                commentList: []         //评论列表数据
             }
+        },
+        components: {
+            CommentList,
+            PostComment,
+            CommentReply
         },
         props: {
             articleId: {
@@ -144,7 +174,6 @@ import { followUser, unfollowUser } from '@/api/user';
                 })
             },
             async handleLikeArticle() {
-                console.log('111')
                 if(this.article.attitude === 1) {
                     //已经点赞文章，否则取消点赞
                     await dislikeArticle(this.articleId);
@@ -164,6 +193,19 @@ import { followUser, unfollowUser } from '@/api/user';
                     this.isScrollTopgt120 = false;
                     return;
                 }
+            },
+            //处理回复评论
+            handleReply(comment) {
+                this.replyComment = comment;
+                this.isReplyPopupShow = true;
+            },
+            //提交评论
+            onPostSuccess(comment) {
+                //关闭评论的弹出层
+                this.isPostPopupShow = false;
+
+                //往评论列表中添加评论数据
+                this.commentList.unshift(comment);
             }
         },
     }
@@ -171,11 +213,18 @@ import { followUser, unfollowUser } from '@/api/user';
 
 <style lang="less" scoped>
 .article-container {
+    .article-wrap {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 30px;
+        bottom: 40px;
+        overflow-y: auto;
+    }
     .article-title {
         font-size: 20px;
         color: #3a3a3a;
         padding:14px;
-        margin-top: 46px;
     }
     .avatar {
         width: 35px;
@@ -208,6 +257,9 @@ import { followUser, unfollowUser } from '@/api/user';
     background-color:#FAFAFA;
     position: fixed;
     bottom: 0;
+    .icon {
+        font-size: 24px;
+    }
     .comment-btn {
         width: 40%;
         height: 30px;
