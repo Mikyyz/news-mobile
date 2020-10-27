@@ -117,7 +117,7 @@ body {
         .avatar {
             width: 60px;
             height: 60px;
-            border: 2px solid #fff;
+            border: 1px solid #fff;
         }
         .username {
             font-size: 15px;
