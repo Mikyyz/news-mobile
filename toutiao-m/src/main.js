@@ -33,7 +33,10 @@ import {
   PullRefresh,
   Tag,
   Popup,
-  Empty
+  Empty,
+  Notify,
+  Picker,
+  DatetimePicker
   } from 'vant';
 import 'vant/lib/index.css';
 
@@ -66,6 +69,9 @@ Vue.use(PullRefresh);
 Vue.use(Tag);
 Vue.use(Popup);
 Vue.use(Empty);
+Vue.use(Notify);
+Vue.use(Picker);
+Vue.use(DatetimePicker)
 
 var vm = new Vue({
   router,
