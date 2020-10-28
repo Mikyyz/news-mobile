@@ -10,7 +10,7 @@
                     src="currentUser.photo" 
                 />
                 <div slot="title" class="username">{{ currentUser.name }}</div>
-                <van-button size="mini" class="edit-btn" round>
+                <van-button size="mini" class="edit-btn" round to="/user/profile">
                     编辑资料
                 </van-button>
             </van-cell>
@@ -117,7 +117,7 @@ body {
         .avatar {
             width: 60px;
             height: 60px;
-            border: 1px solid #fff;
+            border: 2px solid #fff;
         }
         .username {
             font-size: 15px;
@@ -125,7 +125,7 @@ body {
             margin-left: 10px;
         }
         .edit-btn {
-            padding: 6px 15px;
+            padding: 14px 15px;
             color: #666;
             font-size: 14px;
         }
@@ -152,12 +152,12 @@ body {
         .nav-grid-item {
             height: 70px;
             background-color: #fff;
-            .van-icon-star-o{
-                font-size: 24px;
+            /deep/.van-icon-star-o{
+                font-size: 26px;
                 color: #eb5253;
             }
-            .van-icon-clock-o {
-                font-size: 24px;
+            /deep/.van-icon-clock-o {
+                font-size: 26px;
                 color: #ff9d1d;
             }
         }
