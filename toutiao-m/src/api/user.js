@@ -54,8 +54,8 @@ export const getUserChannerls = () => {
  */
 export const followUser = userId => {
     return request({
-        url: '/app/v1_0/user/followings',
         method: 'POST',
+        url: '/app/v1_0/user/followings',
         data: {
             target: userId
         }
@@ -67,8 +67,25 @@ export const followUser = userId => {
  */
 export const unfollowUser = userId => {
     return request({
+        method: 'DELETE',
         url: `/app/v1_0/user/followings/${userId}`,
-        method: 'DELETE'
     })
 }
 
+// 获取用户个人资料
+
+export const getUserProfile = () => {
+    return request({
+        url: '/app/v1_0/user/profile'
+    })
+}
+
+//编辑用户个人资料（包含实名认证）
+
+export const editUserProfile = data => {
+    return request({
+        method: 'PATCH',
+        url: '/app/v1_0/user/profile',
+        data
+    })
+}
