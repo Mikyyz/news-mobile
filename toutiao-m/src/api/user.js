@@ -89,3 +89,13 @@ export const editUserProfile = data => {
         data
     })
 }
+
+//编辑用户照片资料（头像、身份证照片）
+export const editUserAvatar = data => {
+    return request({
+        method: 'PATCH',
+        url: '/app/v1_0/user/photo',
+        data
+    })
+}
+
