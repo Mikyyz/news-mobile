@@ -86,6 +86,7 @@ import { getCurrentUser } from '@/api/user';
                 this.$dialog.confirm({
                         title: '退出确认',
                         message: '退出当前账号，将不能同步收藏,发布评论和云端分享等',
+                        width: 250
                     }).then(() => {
                         //点击确认后清除用户登录状态
                         this.$store.commit('setUser', null);
