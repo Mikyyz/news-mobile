@@ -52,7 +52,7 @@
                 <van-button class="comment-btn" round icon="edit" @click="isPostPopupShow = true">
                     <span class="text">写评论...</span>
                 </van-button>
-                <van-icon name="comment-o" class="comment-icon icon" info="9999" />
+                <van-icon name="comment-o" class="comment-icon icon" :info="commentList.length > 0 ? commentList.length : ''" />
                 <van-icon 
                     :color="article.is_collected ? '#FFB300' : ''"
                     :name="article.is_collected ? 'star' : 'star-o'"
@@ -112,7 +112,7 @@ import CommentReply from './components/comment-reply'
         },
         props: {
             articleId: {
-                type: [Number, String],
+                type: [Number, String, Object],
                 required: true
             },
         },
@@ -126,6 +126,7 @@ import CommentReply from './components/comment-reply'
             async loadArticleDetail() {
                 const { data } = await getArticleDeatail(this.articleId);
                 this.article = data.data;
+                //console.log(this.article)
                 document.title = this.article.title;//动态修改页面的title
                 this.$nextTick(() => {
                     this.handleImagePreview();
