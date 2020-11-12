@@ -37,7 +37,9 @@ import {
   Notify,
   Picker,
   DatetimePicker,
-  ImagePreview
+  ImagePreview,
+  DropdownMenu,
+  DropdownItem
   } from 'vant';
 import 'vant/lib/index.css';
 
@@ -74,6 +76,8 @@ Vue.use(Notify);
 Vue.use(Picker);
 Vue.use(DatetimePicker)
 Vue.use(ImagePreview)
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
 
 var vm = new Vue({
   router,
