@@ -19,6 +19,10 @@ import { mapState } from 'vuex'
                 active: 0
             }
         },
+        mounted () {
+            //在layout组件挂在之后缓存组件
+            this.$store.commit('addCachePages', 'layout')
+        },
         computed: {
            ...mapState(['user'])
         },
