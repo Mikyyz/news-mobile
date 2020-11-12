@@ -100,9 +100,13 @@ import { login, sendSms } from '@/api/user';
                    this.$toast.success('登录成功')
                    //登录成功之后将后端返回的token存储到VUEX中
                    this.$store.commit('setUser', data.data)
+
+                   //登录之前移除已经缓存的页面
+                   this.$store.commit('removeCachePages', 'layout')
                    
                    //登录成功后跳转到之前的页面
-                   this.$router.back();
+                   //this.$router.back();这个做法有问题
+                   this.$router.push(this.$router.query.redirect || '/');
                } catch (err) {
                    this.$toast.fail('登录失败')
                }
