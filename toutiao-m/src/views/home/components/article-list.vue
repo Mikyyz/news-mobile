@@ -1,5 +1,5 @@
 <template>
-    <div class="article-list">
+    <div class="article-list" ref="article-list">
         <van-pull-refresh v-model="isRefreshLoading" success-duration="1000" @refresh="onRefresh">
             <template #success>
                 <van-tag 
@@ -32,6 +32,7 @@
 
 import { getArticles } from '@/api/article';
 import ArticleItem from '@/components/article-item';
+import { debounce } from 'lodash'
 
     export default {
         data() {
@@ -41,7 +42,8 @@ import ArticleItem from '@/components/article-item';
                 finished: false,
                 timestamp: null,
                 isRefreshLoading: false,
-                refreshCount: ''
+                refreshCount: '',
+                scrollTop: 0 //文章列表的滚动位置
             }
         },
         components: {
@@ -52,6 +54,19 @@ import ArticleItem from '@/components/article-item';
                 type: Object,
                 required: true
             },
+        },
+        mounted () {
+            const articleList = this.$refs['article-list'];
+            //监听滚动,并记录滚动位置
+            articleList.onscroll = debounce(() => {
+                //console.log(articleList.scrollTop)
+                this.scrollTop = articleList.scrollTop; 
+            }, 50)
+        },
+        activated () {
+            //当该组件激活的时候保存scrollTop的位置
+            //console.log('该组件激活')
+            this.$refs['article-list'].scrollTop = this.scrollTop;
         },
         methods: {
             async onLoad() {
