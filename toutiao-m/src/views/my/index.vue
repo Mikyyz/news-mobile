@@ -42,7 +42,12 @@
             </van-grid>
         </van-cell-group>
         <div v-else class="not-login">
-            <div class="not-login-wrapper" @click="$router.push('/login')">
+            <div class="not-login-wrapper" @click="$router.push({
+                name: 'login',
+                query: {
+                    redirect: '/my'
+                }
+            })">
                 <div class="not-login-img">
                     <van-icon name="graphic" size="55" color="#1989fa" />
                 </div>
@@ -54,8 +59,8 @@
             <van-grid-item icon="clock-o" text="历史" class="nav-grid-item" />
         </van-grid>
         <van-cell-group class="cell-box" :border="false">
-            <van-cell title="消息通知" is-link to="" />
-            <van-cell title="小智同学" is-link to="" />
+            <van-cell title="消息通知" is-link to="/user/message" />
+            <van-cell title="智能聊天" is-link to="/user/chat" />
         </van-cell-group>
         <van-cell class="login-out" v-if="user" @click="onLogout" title="退出登录" />
     </div>
