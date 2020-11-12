@@ -70,7 +70,7 @@ import  store  from 'store';
     export default {
         data() {
             return {
-                active: 1,
+                active: 0,
                 channels: [],
                 isChannelEditShow: false //频道编辑列表状态
             }
@@ -84,7 +84,6 @@ import  store  from 'store';
         },
         created () {
             this.loadChannels();
-            console.log(this);
         },
         methods: {
            async loadChannels() {
@@ -150,6 +149,7 @@ import  store  from 'store';
 }
 /deep/ .van-tabs__line {
   z-index: 0;
+  background-color: #3296fa;
 }
 .channel-edit-popup {
     height: 95%;
@@ -160,12 +160,11 @@ import  store  from 'store';
 .wap-nav-wrap {
     position: fixed;
     right: 0;
-    width: 30px;
+    width: 20px;
     height: 44px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(to right, rgba(255, 255, 255, .7) 1%,#fff, #fff);
     text-align: center;
     .van-icon {
         color: #999;
