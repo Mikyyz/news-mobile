@@ -258,6 +258,7 @@ import store from 'store';
             position: absolute;
             right: 2px;
             top: 2px;
+            font-size: 10px;
         }
     }
     .recommend-item-wrapper {
